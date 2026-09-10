@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('bugs', function (Blueprint $table): void {
+            $table->id();
+            $table->string('reference')->unique(); // BUG-2026-001
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->text('description')->nullable();
+            $table->foreignId('reported_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('assigned_to')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('priority')->default('medium');
+            $table->string('status')->default('open');
+            $table->date('due_date')->nullable();
+            $table->timestamp('resolved_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index(['project_id', 'status']);
+            $table->index(['assigned_to', 'status']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('bugs');
+    }
+};

@@ -1,0 +1,150 @@
+<?php
+
+namespace App\Livewire\Forms;
+
+use App\Models\Quotation;
+use App\Support\Settings;
+use Illuminate\Validation\Rule;
+use Livewire\Form;
+
+class QuotationForm extends Form
+{
+    public ?int $quotationId = null;
+
+    public ?int $customer_id = null;
+
+    public ?int $project_id = null;
+
+    public string $title = '';
+
+    public ?string $issue_date = null;
+
+    public ?string $valid_until = null;
+
+    public string $discount_type = 'amount';
+
+    public float $discount_value = 0;
+
+    public float $tax_rate = 0;
+
+    public string $terms = '';
+
+    public string $notes = '';
+
+    /** @var list<array{description: string, quantity: float|string, unit_price: float|string}> */
+    public array $items = [];
+
+    public function mountDefaults(): void
+    {
+        $settings = app(Settings::class);
+
+        $this->issue_date = now()->toDateString();
+        $this->valid_until = now()->addDays((int) $settings->get('finance.quotation_validity_days'))->toDateString();
+        $this->terms = (string) $settings->get('finance.payment_terms');
+        $this->items = [$this->blankItem()];
+    }
+
+    public function setQuotation(Quotation $quotation): void
+    {
+        $this->quotationId = $quotation->id;
+        $this->customer_id = $quotation->customer_id;
+        $this->project_id = $quotation->project_id;
+        $this->title = (string) $quotation->title;
+        $this->issue_date = $quotation->issue_date->toDateString();
+        $this->valid_until = $quotation->valid_until?->toDateString();
+        $this->discount_type = $quotation->discount_type;
+        $this->discount_value = (float) $quotation->discount_value;
+        $this->tax_rate = (float) $quotation->tax_rate;
+        $this->terms = (string) $quotation->terms;
+        $this->notes = (string) $quotation->notes;
+        $this->items = $quotation->items
+            ->map(fn ($i) => [
+                'description' => $i->description,
+                'quantity' => (float) $i->quantity,
+                'unit_price' => (float) $i->unit_price,
+            ])->all() ?: [$this->blankItem()];
+    }
+
+    /**
+     * @return array{description: string, quantity: float, unit_price: float}
+     */
+    public function blankItem(): array
+    {
+        return ['description' => '', 'quantity' => 1, 'unit_price' => 0];
+    }
+
+    public function addItem(): void
+    {
+        $this->items[] = $this->blankItem();
+    }
+
+    public function removeItem(int $index): void
+    {
+        unset($this->items[$index]);
+        $this->items = array_values($this->items);
+
+        if ($this->items === []) {
+            $this->items = [$this->blankItem()];
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function rules(): array
+    {
+        return [
+            'customer_id' => ['required', Rule::exists('customers', 'id')],
+            'project_id' => ['nullable', Rule::exists('projects', 'id')],
+            'title' => ['nullable', 'string', 'max:255'],
+            'issue_date' => ['required', 'date'],
+            'valid_until' => ['nullable', 'date', 'after_or_equal:issue_date'],
+            'discount_type' => ['required', 'in:amount,percent'],
+            'discount_value' => ['numeric', 'min:0'],
+            'tax_rate' => ['numeric', 'min:0', 'max:100'],
+            'terms' => ['nullable', 'string', 'max:5000'],
+            'notes' => ['nullable', 'string', 'max:5000'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.description' => ['required', 'string', 'max:255'],
+            'items.*.quantity' => ['required', 'numeric', 'min:0.01'],
+            'items.*.unit_price' => ['required', 'numeric', 'min:0'],
+        ];
+    }
+
+    /**
+     * @return array{data: array<string, mixed>, items: list<array<string, mixed>>}
+     */
+    public function validatedData(): array
+    {
+        $validated = $this->validate();
+        $items = $validated['items'];
+        unset($validated['items'], $validated['quotationId']);
+
+        return ['data' => $validated, 'items' => $items];
+    }
+
+    /**
+     * @return array{subtotal: float, discount: float, tax: float, total: float}
+     */
+    public function livePreview(): array
+    {
+        $subtotal = collect($this->items)->sum(
+            fn ($i) => round((float) ($i['quantity'] ?: 0) * (float) ($i['unit_price'] ?: 0), 2)
+        );
+
+        $discount = $this->discount_type === 'percent'
+            ? $subtotal * ((float) $this->discount_value / 100)
+            : min((float) $this->discount_value, $subtotal);
+        $discount = round(max(0, $discount), 2);
+
+        $taxable = max(0, $subtotal - $discount);
+        $tax = round($taxable * ((float) $this->tax_rate / 100), 2);
+
+        return [
+            'subtotal' => round($subtotal, 2),
+            'discount' => $discount,
+            'tax' => $tax,
+            'total' => round($taxable + $tax, 2),
+        ];
+    }
+}
