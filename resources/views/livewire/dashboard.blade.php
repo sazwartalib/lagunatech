@@ -22,7 +22,9 @@
             :href="route('tasks.index')" />
     </div>
 
-    <div class="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    <div class="mt-3 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+        <x-ui.stat-card label="New Leads" :value="$stats['new_leads']" icon="✦" tone="brand"
+            :href="route('leads.index')" />
         <x-ui.stat-card label="Pending Quotations" :value="$stats['pending_quotations']" icon="📝" tone="brand"
             :href="route('quotations.index')" />
         <x-ui.stat-card label="Outstanding" :value="'RM ' . Number::format($stats['outstanding'])" icon="⏳" tone="amber"

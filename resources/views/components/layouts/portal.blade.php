@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ ($title ?? null) ? $title . ' · ' : '' }}{{ config('app.name') }} Portal</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -15,8 +17,8 @@
     <header class="border-b border-slate-200 bg-white">
         <div class="mx-auto flex h-14 max-w-5xl items-center gap-4 px-4 sm:px-6">
             <a href="{{ route('portal.dashboard') }}" wire:navigate class="flex items-center gap-2 font-semibold text-slate-900">
-                <span class="grid size-8 place-items-center rounded-lg bg-brand-600 text-lg text-white">◧</span>
-                <span class="hidden sm:inline">{{ config('app.name') }}</span>
+                <img src="{{ asset('images/logo-icon.png') }}" alt="{{ config('app.name') }}" class="size-8 shrink-0 sm:hidden">
+                <img src="{{ asset('images/logo-full.png') }}" alt="{{ config('app.name') }}" class="hidden h-7 w-auto sm:block">
             </a>
 
             <nav class="ml-2 flex items-center gap-1 text-sm">

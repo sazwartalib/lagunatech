@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Enums\ProjectHealth;
 use App\Enums\TaskStatus;
 use App\Models\Invoice;
+use App\Models\Lead;
 use App\Models\Payment;
 use App\Models\Project;
 use App\Models\Quotation;
@@ -35,6 +36,7 @@ class Dashboard extends Component
             'due_soon' => $dueSoon,
             'overdue' => $overdue,
             'open_tasks' => Task::query()->open()->count(),
+            'new_leads' => Lead::query()->where('status', 'new')->count(),
             'pending_quotations' => Quotation::query()->pending()->count(),
             'outstanding' => (float) Invoice::query()->open()->sum(DB::raw('total - amount_paid')),
             'payments_this_month' => (float) Payment::query()->inMonth()->sum('amount'),

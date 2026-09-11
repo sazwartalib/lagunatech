@@ -9,6 +9,10 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 
+    /* Marketing site only — the internal app keeps Instrument Sans. */
+    --font-marketing: 'Manrope', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
     /* Laguna Tech brand — a calm technical blue */
     --color-brand-50: #eef4ff;
     --color-brand-100: #d9e6ff;
@@ -52,5 +56,78 @@
 
     .scrollbar-slim::-webkit-scrollbar-thumb {
         @apply rounded-full bg-slate-300;
+    }
+
+    /* ---------- Marketing site: dark hero background + scroll reveal ---------- */
+
+    .bg-grid-dark {
+        background-image:
+            linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+        background-size: 64px 64px;
+    }
+
+    .bg-radial-fade {
+        -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 40%, transparent 100%);
+        mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 40%, transparent 100%);
+    }
+
+    @keyframes drift-slow {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(2%, -3%) scale(1.05); }
+    }
+
+    @keyframes drift-slow-reverse {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(-3%, 2%) scale(1.08); }
+    }
+
+    .animate-drift-slow {
+        animation: drift-slow 18s ease-in-out infinite;
+    }
+
+    .animate-drift-slow-reverse {
+        animation: drift-slow-reverse 22s ease-in-out infinite;
+    }
+
+    @keyframes dash {
+        to { stroke-dashoffset: 0; }
+    }
+
+    .animate-dash {
+        stroke-dasharray: 6 10;
+        stroke-dashoffset: 160;
+        animation: dash 8s linear infinite;
+    }
+
+    /*
+     * [data-reveal] elements are visible by default (no-JS / crawlers see full
+     * content). resources/js/app.js opts them into the hidden starting state
+     * at runtime, then reveals them on scroll — progressive enhancement, not
+     * a requirement to see the page.
+     */
+    [data-reveal].reveal-armed {
+        opacity: 0;
+        transform: translateY(1.25rem);
+        transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-reveal].reveal-armed.is-revealed {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        [data-reveal].reveal-armed {
+            opacity: 1;
+            transform: none;
+            transition: none;
+        }
+
+        .animate-drift-slow,
+        .animate-drift-slow-reverse,
+        .animate-dash {
+            animation: none;
+        }
     }
 }

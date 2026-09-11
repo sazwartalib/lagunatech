@@ -44,6 +44,11 @@ class ReferenceGenerator
         return $this->next('BUG', $year);
     }
 
+    public function leadReference(?int $year = null): string
+    {
+        return $this->next('LEAD', $year);
+    }
+
     /**
      * Reserve and format the next value for an arbitrary prefix.
      */

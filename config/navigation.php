@@ -39,7 +39,7 @@ return [
         [
             'label' => 'Sales',
             'items' => [
-                ['label' => 'Leads', 'icon' => '✦', 'route' => null],
+                ['label' => 'Leads', 'icon' => '✦', 'route' => 'leads.index', 'active' => 'leads.*'],
                 ['label' => 'Quotations', 'icon' => '📝', 'route' => 'quotations.index', 'active' => 'quotations.*'],
                 ['label' => 'Change Requests', 'icon' => '⇄', 'route' => 'change-requests.index', 'active' => 'change-requests.*'],
             ],

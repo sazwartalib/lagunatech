@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ ($title ?? null) ? $title . ' · ' : '' }}{{ config('app.name') }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
@@ -27,8 +29,8 @@
         ]"
     >
         <div class="flex h-14 items-center gap-2 border-b border-slate-200 px-4">
-            <span class="grid size-8 shrink-0 place-items-center rounded-lg bg-brand-600 text-lg text-white">◧</span>
-            <span class="truncate text-sm font-semibold text-slate-900" x-show="!collapsed" x-cloak>{{ config('app.name') }}</span>
+            <img src="{{ asset('images/logo-icon.png') }}" alt="{{ config('app.name') }}" class="size-8 shrink-0" x-show="collapsed" x-cloak>
+            <img src="{{ asset('images/logo-full.png') }}" alt="{{ config('app.name') }}" class="h-7 w-auto" x-show="!collapsed" x-cloak>
         </div>
 
         <nav class="scrollbar-slim flex-1 space-y-6 overflow-y-auto px-3 py-4" x-data="{ collapsed }">

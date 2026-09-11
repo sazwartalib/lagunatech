@@ -23,6 +23,8 @@ use App\Livewire\Dashboard;
 use App\Livewire\Invoices\InvoiceForm as InvoiceFormPage;
 use App\Livewire\Invoices\InvoiceIndex;
 use App\Livewire\Invoices\InvoiceShow;
+use App\Livewire\Leads\LeadIndex;
+use App\Livewire\Leads\LeadShow;
 use App\Livewire\Maintenance\MaintenanceForm as MaintenanceFormPage;
 use App\Livewire\Maintenance\MaintenanceIndex;
 use App\Livewire\Meetings\MeetingForm as MeetingFormPage;
@@ -52,7 +54,14 @@ use App\Livewire\System\SettingsForm;
 use App\Livewire\Tasks\TaskIndex;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/dashboard')->name('home');
+// Public marketing landing page. Signed-in staff go straight to their dashboard.
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
+
+    return view('marketing.home');
+})->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -117,6 +126,10 @@ Route::middleware(['auth', 'active'])->group(function (): void {
 
     // Payments
     Route::get('payments', PaymentIndex::class)->name('payments.index');
+
+    // Leads
+    Route::get('leads', LeadIndex::class)->name('leads.index');
+    Route::get('leads/{lead}', LeadShow::class)->name('leads.show');
 
     // Change requests
     Route::get('change-requests', ChangeRequestIndex::class)->name('change-requests.index');

@@ -8,6 +8,7 @@ use App\Models\ChangeRequest;
 use App\Models\Customer;
 use App\Models\CustomerUser;
 use App\Models\Invoice;
+use App\Models\Lead;
 use App\Models\MaintenancePlan;
 use App\Models\Meeting;
 use App\Models\Project;
@@ -33,6 +34,7 @@ test('core pages render for an admin', function (string $routeName) {
     $ticket = SupportTicket::factory()->for($customer)->create();
     $staff = User::factory()->create();
     $plan = MaintenancePlan::factory()->for($customer)->create();
+    $lead = Lead::factory()->create();
 
     $params = match (true) {
         str_starts_with($routeName, 'customers.') && $routeName !== 'customers.index' => $customer,
@@ -45,6 +47,7 @@ test('core pages render for an admin', function (string $routeName) {
         $routeName === 'support.show' => $ticket,
         $routeName === 'staff.edit' => ['staff' => $staff],
         $routeName === 'maintenance.edit' => ['plan' => $plan],
+        $routeName === 'leads.show' => $lead,
         default => [],
     };
 
@@ -84,6 +87,8 @@ test('core pages render for an admin', function (string $routeName) {
     'meetings.show',
     'meetings.edit',
     'communications.index',
+    'leads.index',
+    'leads.show',
     'calendar',
     'reports',
     'notifications.index',

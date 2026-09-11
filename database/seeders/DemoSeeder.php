@@ -18,6 +18,8 @@ use App\Models\CustomerContact;
 use App\Models\CustomerUser;
 use App\Models\Document;
 use App\Models\Invoice;
+use App\Models\Lead;
+use App\Models\LeadNote;
 use App\Models\MaintenancePlan;
 use App\Models\Meeting;
 use App\Models\MeetingActionItem;
@@ -147,9 +149,26 @@ class DemoSeeder extends Seeder
         $this->createCommunications($customers, array_merge($pms, $builders));
         $this->createStandaloneQuotations($customers, $pms);
         $this->createPortalUsers($customers);
+        $this->createLeads($pms);
         $this->seedSettings();
         $this->seedNotifications($staff);
         $this->syncSequences();
+    }
+
+    /**
+     * A handful of website enquiries at various pipeline stages.
+     *
+     * @param  list<User>  $owners
+     */
+    private function createLeads(array $owners): void
+    {
+        Lead::factory()->count(4)->statusNew()->fromWebsite()->create(['owner_id' => null]);
+
+        Lead::factory()->count(6)->create([
+            'owner_id' => fn () => fake()->randomElement($owners)->id,
+        ])->each(fn (Lead $lead) => LeadNote::factory()
+            ->count(fake()->numberBetween(0, 2))
+            ->create(['lead_id' => $lead->id, 'user_id' => fake()->randomElement($owners)->id]));
     }
 
     /**
@@ -171,6 +190,7 @@ class DemoSeeder extends Seeder
             'CR' => ChangeRequest::class,
             'BUG' => Bug::class,
             'TKT' => SupportTicket::class,
+            'LEAD' => Lead::class,
         ];
 
         $highWater = [];
