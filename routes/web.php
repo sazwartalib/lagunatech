@@ -63,6 +63,16 @@ Route::get('/', function () {
     return view('marketing.home');
 })->name('home');
 
+Route::get('sitemap.xml', function () {
+    $urls = [
+        ['loc' => route('home'), 'priority' => '1.0'],
+    ];
+
+    return response()
+        ->view('marketing.sitemap', ['urls' => $urls])
+        ->header('Content-Type', 'application/xml');
+})->name('sitemap');
+
 /*
 |--------------------------------------------------------------------------
 | Guest

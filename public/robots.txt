@@ -1,2 +1,29 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /login
+Disallow: /logout
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /dashboard
+Disallow: /customers
+Disallow: /projects
+Disallow: /tasks
+Disallow: /quotations
+Disallow: /invoices
+Disallow: /payments
+Disallow: /leads
+Disallow: /change-requests
+Disallow: /bugs
+Disallow: /communications
+Disallow: /meetings
+Disallow: /support
+Disallow: /maintenance
+Disallow: /documents
+Disallow: /calendar
+Disallow: /reports
+Disallow: /notifications
+Disallow: /staff
+Disallow: /system
+Disallow: /portal
+
+Sitemap: https://lagunatech.my/sitemap.xml

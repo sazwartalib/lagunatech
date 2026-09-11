@@ -1,4 +1,14 @@
-@php($settings = app(\App\Support\Settings::class))
+@php
+    $settings = app(\App\Support\Settings::class);
+    $pageTitle = $title ?? 'Laguna Tech — Custom Software & Digital Solutions';
+    $description = $metaDescription ?? 'Laguna Tech builds custom software, web applications and digital solutions that help businesses simplify operations, automate processes and grow.';
+    $ogImage = $ogImage ?? asset('images/og-image.png');
+    $canonical = url()->current();
+    $companyName = $settings->get('company.name');
+    $companyEmail = $settings->get('company.email');
+    $companyPhone = $settings->get('company.phone');
+    $companyAddress = $settings->get('company.address');
+@endphp
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -6,20 +16,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'Laguna Tech — Custom Software & Digital Solutions' }}</title>
-    <meta name="description" content="{{ $metaDescription ?? 'Laguna Tech builds custom software, web applications and digital solutions that help businesses simplify operations, automate processes and grow.' }}">
-    <link rel="canonical" href="{{ url()->current() }}">
+    <title>{{ $pageTitle }}</title>
+    <meta name="description" content="{{ $description }}">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="{{ $companyName }}">
+    <link rel="canonical" href="{{ $canonical }}">
 
+    {{-- Open Graph --}}
     <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ $title ?? 'Laguna Tech — Custom Software & Digital Solutions' }}">
-    <meta property="og:description" content="{{ $metaDescription ?? 'Custom software, web and mobile development for businesses that want to move forward.' }}">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:site_name" content="{{ $companyName }}">
+    <meta property="og:locale" content="en_MY">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $description }}">
+    <meta property="og:url" content="{{ $canonical }}">
+    <meta property="og:image" content="{{ $ogImage }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ $companyName }} — {{ $pageTitle }}">
+
+    {{-- Twitter Card --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $description }}">
+    <meta name="twitter:image" content="{{ $ogImage }}">
+
     <meta name="theme-color" content="#05070A">
 
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+
+    {{-- Structured data (JSON-LD): Organization + this WebPage --}}
+    <script type="application/ld+json">
+        {!! json_encode([
+            '@context' => 'https://schema.org',
+            '@graph' => [
+                [
+                    '@type' => 'Organization',
+                    '@id' => url('/#organization'),
+                    'name' => $companyName,
+                    'url' => url('/'),
+                    'logo' => asset('images/logo-full.png'),
+                    'image' => $ogImage,
+                    'description' => 'Custom software studio in Malaysia building web applications, mobile applications and business management systems.',
+                    ...(($companyEmail || $companyPhone) ? ['contactPoint' => array_filter([
+                        '@type' => 'ContactPoint',
+                        'contactType' => 'sales',
+                        'email' => $companyEmail ?: null,
+                        'telephone' => $companyPhone ?: null,
+                        'areaServed' => 'MY',
+                    ])] : []),
+                    ...($companyAddress ? ['address' => [
+                        '@type' => 'PostalAddress',
+                        'streetAddress' => $companyAddress,
+                        'addressCountry' => 'MY',
+                    ]] : []),
+                    'makesOffer' => collect([
+                        'Custom Software Development',
+                        'Web Application Development',
+                        'Mobile Application Development',
+                        'Business Management Systems',
+                        'Business Process Automation',
+                        'Digital Transformation',
+                    ])->map(fn ($service) => [
+                        '@type' => 'Offer',
+                        'itemOffered' => ['@type' => 'Service', 'name' => $service],
+                    ])->all(),
+                ],
+                [
+                    '@type' => 'WebSite',
+                    '@id' => url('/#website'),
+                    'name' => $companyName,
+                    'url' => url('/'),
+                    'publisher' => ['@id' => url('/#organization')],
+                ],
+                [
+                    '@type' => 'WebPage',
+                    '@id' => $canonical.'#webpage',
+                    'url' => $canonical,
+                    'name' => $pageTitle,
+                    'description' => $description,
+                    'isPartOf' => ['@id' => url('/#website')],
+                ],
+            ],
+        ], JSON_UNESCAPED_SLASHES) !!}
+    </script>
 </head>
 <body class="font-marketing overflow-x-hidden bg-[#05070A] text-white antialiased selection:bg-cyan-400/30 selection:text-white" x-data="{ mobileNav: false }">
 
