@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
 </head>
 <body class="h-full">
     <div class="flex min-h-full">
@@ -37,5 +38,6 @@
             </div>
         </div>
     </div>
+    @livewireScripts
 </body>
 </html>
