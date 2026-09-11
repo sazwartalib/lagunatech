@@ -56,6 +56,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Staff / Admin Subdomain
+    |--------------------------------------------------------------------------
+    |
+    | When set, the authenticated staff back-office (login, dashboard, and
+    | everything under it) is only routed on this domain, keeping the root
+    | domain free for the public marketing site and customer portal. Leave
+    | unset (e.g. local development) to serve everything on one host.
+    |
+    */
+
+    'admin_domain' => env('ADMIN_DOMAIN'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
