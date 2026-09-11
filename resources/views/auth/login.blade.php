@@ -10,7 +10,13 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('login.store') }}" class="space-y-4">
+    <form
+        method="POST"
+        action="{{ route('login.store') }}"
+        x-data="{ submitting: false }"
+        @submit="submitting = true"
+        class="space-y-4"
+    >
         @csrf
 
         <x-ui.field label="Email" name="email" required>
@@ -34,6 +40,12 @@
             @endif
         </div>
 
-        <x-ui.button type="submit" size="lg" class="w-full">Sign in</x-ui.button>
+        <x-ui.button type="submit" size="lg" class="w-full" x-bind:disabled="submitting">
+            <span x-show="!submitting">Sign in</span>
+            <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
+                <x-ui.spinner />
+                Signing in…
+            </span>
+        </x-ui.button>
     </form>
 </x-layouts.guest>

@@ -10,14 +10,26 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('password.email') }}" class="space-y-4">
+    <form
+        method="POST"
+        action="{{ route('password.email') }}"
+        x-data="{ submitting: false }"
+        @submit="submitting = true"
+        class="space-y-4"
+    >
         @csrf
 
         <x-ui.field label="Email" name="email" required>
             <x-ui.input type="email" name="email" :value="old('email')" required autofocus placeholder="you@lagunatech.com" />
         </x-ui.field>
 
-        <x-ui.button type="submit" size="lg" class="w-full">Email reset link</x-ui.button>
+        <x-ui.button type="submit" size="lg" class="w-full" x-bind:disabled="submitting">
+            <span x-show="!submitting">Email reset link</span>
+            <span x-show="submitting" x-cloak class="inline-flex items-center gap-2">
+                <x-ui.spinner />
+                Sending…
+            </span>
+        </x-ui.button>
 
         <p class="text-center text-sm text-slate-500">
             <a href="{{ route('login') }}" class="font-medium text-brand-600 hover:text-brand-700">Back to sign in</a>

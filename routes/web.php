@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LoginOtpController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DocumentDownloadController;
 use App\Http\Controllers\DocumentPdfController;
 use App\Http\Controllers\LeadAttachmentDownloadController;
@@ -96,7 +98,19 @@ $staffRoutes = function (): void {
 
         Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
         Route::post('reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+
+        Route::get('otp/verify', [LoginOtpController::class, 'show'])->name('login.otp.show');
+        Route::post('otp/verify', [LoginOtpController::class, 'verify'])
+            ->middleware('throttle:6,1,otp-verify')
+            ->name('login.otp.verify');
+        Route::post('otp/resend', [LoginOtpController::class, 'resend'])
+            ->middleware('throttle:3,1,otp-resend')
+            ->name('login.otp.resend');
     });
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware('signed')
+        ->name('verification.verify');
 
     /*
     |--------------------------------------------------------------------------

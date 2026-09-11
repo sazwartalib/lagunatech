@@ -6,7 +6,21 @@ test('the login screen renders', function () {
     $this->get('/login')->assertOk()->assertSee('Welcome back');
 });
 
-test('a staff member can sign in', function () {
+test('correct credentials send the staff member to the OTP step', function () {
+    $user = User::factory()->create(['password' => bcrypt('secret-password')]);
+
+    $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'secret-password',
+    ])->assertRedirect('/otp/verify');
+
+    // Not authenticated yet — the OTP step still has to be completed.
+    $this->assertGuest();
+});
+
+test('a staff member can sign in when OTP is disabled', function () {
+    config(['otp.enabled' => false]);
+
     $user = User::factory()->create(['password' => bcrypt('secret-password')]);
 
     $this->post('/login', [

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\Role as RoleEnum;
+use App\Mail\Auth\ResetPasswordMail;
+use App\Mail\Auth\VerifyEmailMail;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -71,6 +75,31 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isSuperAdmin(): bool
     {
         return $this->hasRole(RoleEnum::SuperAdmin->value);
+    }
+
+    /**
+     * Send the branded password reset email instead of Laravel's stock notification.
+     */
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token)
+    {
+        $url = url(route('password.reset', ['token' => $token], false).'?email='.rawurlencode($this->getEmailForPasswordReset()));
+
+        Mail::to($this)->queue(new ResetPasswordMail($this, $url, config('auth.passwords.users.expire')));
+    }
+
+    /**
+     * Send the branded verification email. Not currently enforced by any middleware —
+     * staff accounts are provisioned as already verified — kept for future use.
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $url = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $this->getKey(), 'hash' => sha1($this->getEmailForVerification())],
+        );
+
+        Mail::to($this)->queue(new VerifyEmailMail($this, $url));
     }
 
     /**

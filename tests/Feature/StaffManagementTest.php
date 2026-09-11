@@ -3,10 +3,14 @@
 use App\Enums\Role;
 use App\Livewire\Staff\StaffForm;
 use App\Livewire\Staff\StaffIndex;
+use App\Mail\Auth\StaffInvitationMail;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
 
 test('an admin can add a staff member and assign roles', function () {
+    Mail::fake();
+
     actingAsRole(Role::Admin);
 
     Livewire::test(StaffForm::class)
@@ -23,6 +27,8 @@ test('an admin can add a staff member and assign roles', function () {
     expect($user)->not->toBeNull()
         ->and($user->hasRole(Role::Developer->value))->toBeTrue()
         ->and($user->password)->not->toBeEmpty();
+
+    Mail::assertQueued(StaffInvitationMail::class, fn (StaffInvitationMail $mail): bool => $mail->user->is($user));
 });
 
 test('adding a staff member requires at least one role', function () {
