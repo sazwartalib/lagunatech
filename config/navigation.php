@@ -33,6 +33,7 @@ return [
                 ['label' => 'My Projects', 'icon' => '📌', 'route' => 'projects.mine'],
                 ['label' => 'Tasks', 'icon' => '✓', 'route' => 'tasks.index', 'active' => 'tasks.*'],
                 ['label' => 'Meetings', 'icon' => '🤝', 'route' => 'meetings.index', 'active' => 'meetings.*'],
+                ['label' => 'Drawings', 'icon' => '🎨', 'route' => 'drawings.index', 'active' => 'drawings.*'],
                 ['label' => 'Calendar', 'icon' => '🗓', 'route' => 'calendar'],
             ],
         ],

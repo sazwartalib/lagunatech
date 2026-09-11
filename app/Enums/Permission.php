@@ -47,6 +47,12 @@ enum Permission: string
     case ManageCustomerPortal = 'manage customer portal';
     case ViewActivityLogs = 'view activity logs';
 
+    case ViewDrawings = 'view drawings';
+    case CreateDrawings = 'create drawings';
+    case EditDrawings = 'edit drawings';
+    case DeleteDrawings = 'delete drawings';
+    case ExportDrawings = 'export drawings';
+
     /**
      * @return list<string>
      */
@@ -69,6 +75,8 @@ enum Permission: string
             self::ManageInvoices, self::RecordPayments, self::ViewFinancialReports, self::ViewReports => 'Finance',
             self::ManageStaff, self::ManageRoles, self::ManageSystemSettings,
             self::ManageCustomerPortal, self::ViewActivityLogs => 'System',
+            self::ViewDrawings, self::CreateDrawings, self::EditDrawings,
+            self::DeleteDrawings, self::ExportDrawings => 'Presentation',
         };
     }
 }

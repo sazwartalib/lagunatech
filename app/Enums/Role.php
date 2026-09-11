@@ -50,6 +50,11 @@ enum Role: string
                 Permission::ViewFinancialReports->value,
                 Permission::ViewReports->value,
                 Permission::ViewActivityLogs->value,
+                Permission::ViewDrawings->value,
+                Permission::CreateDrawings->value,
+                Permission::EditDrawings->value,
+                Permission::DeleteDrawings->value,
+                Permission::ExportDrawings->value,
             ],
             self::Developer, self::Designer => [
                 Permission::ViewCustomers->value,
@@ -59,6 +64,10 @@ enum Role: string
                 Permission::ManageMeetings->value,
                 Permission::LogCommunications->value,
                 Permission::ManageDocuments->value,
+                Permission::ViewDrawings->value,
+                Permission::CreateDrawings->value,
+                Permission::EditDrawings->value,
+                Permission::ExportDrawings->value,
             ],
             self::Finance => [
                 Permission::ViewCustomers->value,
@@ -81,6 +90,10 @@ enum Role: string
                 Permission::ManageMeetings->value,
                 Permission::ManageSupport->value,
                 Permission::ManageDocuments->value,
+                Permission::ViewDrawings->value,
+                Permission::CreateDrawings->value,
+                Permission::EditDrawings->value,
+                Permission::ExportDrawings->value,
             ],
         };
     }

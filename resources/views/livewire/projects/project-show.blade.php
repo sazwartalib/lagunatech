@@ -9,6 +9,7 @@
         'bugs' => 'Bugs',
         'change_requests' => 'Change Requests',
         'meetings' => 'Meetings',
+        'drawings' => 'Drawings',
         'documents' => 'Documents',
         'support' => 'Support',
         'maintenance' => 'Maintenance',
@@ -319,6 +320,10 @@
                 @endforelse
             </div>
         </x-ui.card>
+
+    {{-- ===================== DOCUMENTS ===================== --}}
+    @elseif ($tab === 'drawings')
+        <livewire:drawings.drawing-manager :drawable="$p" :key="'drawings-'.$p->id" />
 
     {{-- ===================== DOCUMENTS ===================== --}}
     @elseif ($tab === 'documents')

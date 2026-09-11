@@ -7,6 +7,10 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\DocumentDownloadController;
 use App\Http\Controllers\DocumentPdfController;
+use App\Http\Controllers\DrawingExportController;
+use App\Http\Controllers\DrawingImageController;
+use App\Http\Controllers\DrawingPresentController;
+use App\Http\Controllers\DrawingSaveController;
 use App\Http\Controllers\LeadAttachmentDownloadController;
 use App\Http\Controllers\Portal\DocumentDownloadController as PortalDocumentDownloadController;
 use App\Http\Controllers\Portal\InvoicePdfController as PortalInvoicePdfController;
@@ -23,6 +27,8 @@ use App\Livewire\Customers\CustomerForm as CustomerFormPage;
 use App\Livewire\Customers\CustomerIndex;
 use App\Livewire\Customers\CustomerShow;
 use App\Livewire\Dashboard;
+use App\Livewire\Drawings\DrawingEditor;
+use App\Livewire\Drawings\DrawingIndex;
 use App\Livewire\Invoices\InvoiceForm as InvoiceFormPage;
 use App\Livewire\Invoices\InvoiceIndex;
 use App\Livewire\Invoices\InvoiceShow;
@@ -194,6 +200,14 @@ $staffRoutes = function (): void {
 
         // Documents
         Route::get('documents/{document}/download', DocumentDownloadController::class)->name('documents.download');
+
+        // Drawings / presentation tool
+        Route::get('drawings', DrawingIndex::class)->name('drawings.index');
+        Route::get('drawings/{drawing}', DrawingEditor::class)->name('drawings.show');
+        Route::patch('drawings/{drawing}', [DrawingSaveController::class, 'update'])->name('drawings.update');
+        Route::get('drawings/{drawing}/present', [DrawingPresentController::class, 'show'])->name('drawings.present');
+        Route::post('drawings/{drawing}/images', [DrawingImageController::class, 'store'])->name('drawings.images.store');
+        Route::post('drawings/{drawing}/export/pdf', [DrawingExportController::class, 'pdf'])->name('drawings.export.pdf');
 
         // Calendar & reports
         Route::get('calendar', CalendarView::class)->name('calendar');
