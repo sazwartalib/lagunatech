@@ -28,6 +28,8 @@ class Lead extends Model
         'phone',
         'project_type',
         'budget_range',
+        'color_theme',
+        'slogan',
         'message',
         'source',
         'status',
@@ -72,6 +74,11 @@ class Lead extends Model
     public function notes(): HasMany
     {
         return $this->hasMany(LeadNote::class)->latest();
+    }
+
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(LeadAttachment::class);
     }
 
     #[Scope]

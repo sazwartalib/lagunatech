@@ -47,11 +47,30 @@
                     <div><dt class="text-slate-400">Company</dt><dd class="text-slate-800">{{ $l->company ?: '—' }}</dd></div>
                     <div><dt class="text-slate-400">Email</dt><dd class="text-slate-800">{{ $l->email }}</dd></div>
                     <div><dt class="text-slate-400">Phone</dt><dd class="text-slate-800">{{ $l->phone ?: '—' }}</dd></div>
-                    <div><dt class="text-slate-400">Project type</dt><dd class="text-slate-800">{{ $l->project_type ?: '—' }}</dd></div>
+                    <div><dt class="text-slate-400">Software category</dt><dd class="text-slate-800">{{ $l->project_type ?: '—' }}</dd></div>
                     <div><dt class="text-slate-400">Budget</dt><dd class="text-slate-800">{{ $l->budget_range ?: '—' }}</dd></div>
-                    <div class="sm:col-span-2"><dt class="text-slate-400">Message</dt><dd class="whitespace-pre-line text-slate-700">{{ $l->message ?: '—' }}</dd></div>
+                    <div><dt class="text-slate-400">Color theme</dt><dd class="text-slate-800">{{ $l->color_theme ?: '—' }}</dd></div>
+                    <div><dt class="text-slate-400">Slogan</dt><dd class="text-slate-800">{{ $l->slogan ?: '—' }}</dd></div>
+                    <div class="sm:col-span-2"><dt class="text-slate-400">Idea / flow</dt><dd class="whitespace-pre-line text-slate-700">{{ $l->message ?: '—' }}</dd></div>
                 </dl>
             </x-ui.card>
+
+            @if ($l->attachments->isNotEmpty())
+                <x-ui.card title="Attachments">
+                    <ul class="divide-y divide-slate-100">
+                        @foreach ($l->attachments as $file)
+                            <li class="flex items-center justify-between gap-3 py-2.5 text-sm" wire:key="la-{{ $file->id }}">
+                                <div class="min-w-0">
+                                    <p class="truncate font-medium text-slate-700">{{ $file->original_name }}</p>
+                                    <p class="text-xs text-slate-400">{{ $file->kind->label() }} · {{ $file->human_size }}</p>
+                                </div>
+                                <a href="{{ route('leads.attachments.download', $file) }}"
+                                   class="shrink-0 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200">Download</a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </x-ui.card>
+            @endif
 
             <x-ui.card title="Follow-up notes">
                 @can('update', $l)

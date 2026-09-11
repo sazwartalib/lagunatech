@@ -7,10 +7,13 @@ use App\Livewire\Leads\LeadShow;
 use App\Livewire\Marketing\LeadForm;
 use App\Models\Customer;
 use App\Models\Lead;
+use App\Models\LeadAttachment;
 use App\Models\User;
 use App\Notifications\NewLeadReceived;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 
 test('the public landing page renders without authentication', function () {
@@ -89,6 +92,68 @@ test('the contact form is rate limited per IP', function () {
         ->assertHasErrors('message');
 
     expect(Lead::count())->toBe(3);
+});
+
+test('the form captures idea details, a company logo and reference attachments', function () {
+    Storage::fake('local');
+    Notification::fake();
+
+    Livewire::test(LeadForm::class)
+        ->set('name', 'Aiman Zul')
+        ->set('email', 'aiman@zul.my')
+        ->set('phone', '013-2223333')
+        ->set('project_type', 'Mobile Application')
+        ->set('color_theme', 'Navy & gold')
+        ->set('slogan', 'Move faster, together')
+        ->set('message', 'An app that lets riders book delivery slots.')
+        ->set('logo', UploadedFile::fake()->image('logo.png'))
+        ->set('attachments', [
+            UploadedFile::fake()->image('mockup.png'),
+            UploadedFile::fake()->create('brief.pdf', 500, 'application/pdf'),
+        ])
+        ->call('submit')
+        ->assertHasNoErrors()
+        ->assertSet('submitted', true);
+
+    $lead = Lead::firstWhere('email', 'aiman@zul.my');
+
+    expect($lead->color_theme)->toBe('Navy & gold')
+        ->and($lead->slogan)->toBe('Move faster, together')
+        ->and($lead->attachments()->count())->toBe(3)
+        ->and($lead->attachments()->where('kind', 'logo')->count())->toBe(1)
+        ->and($lead->attachments()->where('kind', 'attachment')->count())->toBe(2);
+
+    foreach ($lead->attachments as $attachment) {
+        Storage::disk('local')->assertExists($attachment->path);
+    }
+});
+
+test('an unsupported attachment type is rejected', function () {
+    Livewire::test(LeadForm::class)
+        ->set('name', 'Test User')
+        ->set('email', 'test@example.my')
+        ->set('phone', '012-0000000')
+        ->set('message', 'Testing an invalid file.')
+        ->set('attachments', [UploadedFile::fake()->create('virus.exe', 100)])
+        ->call('submit')
+        ->assertHasErrors('attachments.*');
+
+    expect(Lead::count())->toBe(0);
+});
+
+test('a lead attachment can only be downloaded by staff who can view customers', function () {
+    Storage::fake('local');
+    $lead = Lead::factory()->create();
+    $attachment = LeadAttachment::factory()->for($lead)->create(['disk' => 'local']);
+    Storage::disk('local')->put($attachment->path, 'dummy content');
+
+    $this->get(route('leads.attachments.download', $attachment))->assertRedirect();
+
+    $this->actingAs(User::factory()->create());
+    $this->get(route('leads.attachments.download', $attachment))->assertForbidden();
+
+    actingAsRole(Role::ProjectManager);
+    $this->get(route('leads.attachments.download', $attachment))->assertOk();
 });
 
 test('missing required fields are rejected', function () {

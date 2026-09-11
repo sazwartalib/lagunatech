@@ -59,14 +59,66 @@
                         @foreach ($this->budgetRanges() as $range)<option value="{{ $range }}" class="bg-[#0B0F16]">{{ $range }}</option>@endforeach
                     </select>
                 </div>
+                <div>
+                    <label for="lead-color-theme" class="mb-1.5 block text-xs font-medium text-white/50">Preferred color theme</label>
+                    <input id="lead-color-theme" type="text" wire:model="color_theme" placeholder="e.g. Navy & gold, minimalist black/white"
+                           class="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder:text-white/25 transition focus:border-cyan-400/50 focus:bg-white/[0.05] focus:outline-none focus:ring-1 focus:ring-cyan-400/50">
+                    @error('color_theme')<p class="mt-1 text-xs text-rose-400">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="lead-slogan" class="mb-1.5 block text-xs font-medium text-white/50">Slogan / tagline <span class="text-white/25">(if any)</span></label>
+                    <input id="lead-slogan" type="text" wire:model="slogan" placeholder="Your company's slogan"
+                           class="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder:text-white/25 transition focus:border-cyan-400/50 focus:bg-white/[0.05] focus:outline-none focus:ring-1 focus:ring-cyan-400/50">
+                    @error('slogan')<p class="mt-1 text-xs text-rose-400">{{ $message }}</p>@enderror
+                </div>
             </div>
 
             <div>
-                <label for="lead-message" class="mb-1.5 block text-xs font-medium text-white/50">Tell us about your project <span class="text-cyan-400">*</span></label>
-                <textarea id="lead-message" wire:model="message" rows="4" placeholder="What problem are you trying to solve? What does success look like?"
+                <label for="lead-message" class="mb-1.5 block text-xs font-medium text-white/50">Describe your idea — how should it work? <span class="text-cyan-400">*</span></label>
+                <textarea id="lead-message" wire:model="message" rows="4" placeholder="Walk us through the idea: the problem, the flow, who uses it, and what success looks like."
                           class="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder:text-white/25 transition focus:border-cyan-400/50 focus:bg-white/[0.05] focus:outline-none focus:ring-1 focus:ring-cyan-400/50"></textarea>
                 @error('message')<p class="mt-1 text-xs text-rose-400">{{ $message }}</p>@enderror
             </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                    <label for="lead-logo" class="mb-1.5 block text-xs font-medium text-white/50">Company logo <span class="text-white/25">(if any)</span></label>
+                    <label for="lead-logo"
+                           class="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-white/15 bg-white/[0.02] px-3.5 py-2.5 text-sm text-white/40 transition hover:border-cyan-400/40 hover:text-white/60">
+                        <x-marketing.icon name="upload" class="size-4 shrink-0" />
+                        <span class="truncate">{{ $logo ? $logo->getClientOriginalName() : 'Upload logo (image)' }}</span>
+                    </label>
+                    <input id="lead-logo" type="file" wire:model="logo" accept="image/*" class="hidden">
+                    <div wire:loading wire:target="logo" class="mt-1 text-xs text-white/30">Uploading…</div>
+                    @error('logo')<p class="mt-1 text-xs text-rose-400">{{ $message }}</p>@enderror
+                </div>
+                <div>
+                    <label for="lead-attachments" class="mb-1.5 block text-xs font-medium text-white/50">Reference docs / images <span class="text-white/25">(mockups, briefs — up to 5)</span></label>
+                    <label for="lead-attachments"
+                           class="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-white/15 bg-white/[0.02] px-3.5 py-2.5 text-sm text-white/40 transition hover:border-cyan-400/40 hover:text-white/60">
+                        <x-marketing.icon name="upload" class="size-4 shrink-0" />
+                        <span class="truncate">{{ count($attachments) ? count($attachments).' file(s) selected' : 'Attach doc or image' }}</span>
+                    </label>
+                    <input id="lead-attachments" type="file" wire:model="attachments" multiple accept="image/*,.pdf,.doc,.docx" class="hidden">
+                    <div wire:loading wire:target="attachments" class="mt-1 text-xs text-white/30">Uploading…</div>
+                    @error('attachments')<p class="mt-1 text-xs text-rose-400">{{ $message }}</p>@enderror
+                    @error('attachments.*')<p class="mt-1 text-xs text-rose-400">{{ $message }}</p>@enderror
+                </div>
+            </div>
+
+            @if (count($attachments))
+                <ul class="flex flex-wrap gap-2">
+                    @foreach ($attachments as $index => $file)
+                        <li wire:key="attachment-{{ $index }}"
+                            class="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] py-1 pl-3 pr-1.5 text-xs text-white/60">
+                            <span class="max-w-[10rem] truncate">{{ $file->getClientOriginalName() }}</span>
+                            <button type="button" wire:click="removeAttachment({{ $index }})" class="grid size-4 place-items-center rounded-full text-white/40 hover:bg-white/10 hover:text-white" aria-label="Remove file">
+                                <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 6l12 12M18 6 6 18"/></svg>
+                            </button>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
 
             <button type="submit"
                     class="group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-white px-5 py-3.5 text-sm font-semibold text-[#05070A] transition hover:bg-cyan-300 disabled:opacity-60 sm:w-auto"

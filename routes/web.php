@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\DocumentDownloadController;
 use App\Http\Controllers\DocumentPdfController;
+use App\Http\Controllers\LeadAttachmentDownloadController;
 use App\Http\Controllers\Portal\DocumentDownloadController as PortalDocumentDownloadController;
 use App\Http\Controllers\Portal\InvoicePdfController as PortalInvoicePdfController;
 use App\Http\Controllers\Portal\LoginController as PortalLoginController;
@@ -144,6 +145,7 @@ $staffRoutes = function (): void {
         // Leads
         Route::get('leads', LeadIndex::class)->name('leads.index');
         Route::get('leads/{lead}', LeadShow::class)->name('leads.show');
+        Route::get('leads/attachments/{leadAttachment}/download', LeadAttachmentDownloadController::class)->name('leads.attachments.download');
 
         // Change requests
         Route::get('change-requests', ChangeRequestIndex::class)->name('change-requests.index');

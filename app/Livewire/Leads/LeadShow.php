@@ -72,7 +72,7 @@ class LeadShow extends Component
 
     public function render(): View
     {
-        $this->lead->loadMissing(['owner:id,name', 'convertedCustomer:id,reference,company_name', 'notes.user:id,name']);
+        $this->lead->loadMissing(['owner:id,name', 'convertedCustomer:id,reference,company_name', 'notes.user:id,name', 'attachments']);
 
         return view('livewire.leads.lead-show', [
             'title' => $this->lead->reference,
