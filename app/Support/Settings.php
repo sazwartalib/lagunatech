@@ -20,7 +20,7 @@ class Settings
         'company.name' => 'Laguna Tech',
         'company.registration_no' => '202603101118 (TR0340857-X)',
         'company.address' => '',
-        'company.email' => 'hello@lagunatech.com',
+        'company.email' => 'hello@lagunatech.my',
         'company.phone' => '',
         'company.bank_details' => "Bank: Maybank\nAccount Name: Laguna Tech\nAccount No.: 552189625040",
         'finance.default_tax_rate' => 0,

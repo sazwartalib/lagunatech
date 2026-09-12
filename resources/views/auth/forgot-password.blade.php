@@ -20,7 +20,7 @@
         @csrf
 
         <x-ui.field label="Email" name="email" required>
-            <x-ui.input type="email" name="email" :value="old('email')" required autofocus placeholder="you@lagunatech.com" />
+            <x-ui.input type="email" name="email" :value="old('email')" required autofocus placeholder="you@lagunatech.my" />
         </x-ui.field>
 
         <x-ui.button type="submit" size="lg" class="w-full" x-bind:disabled="submitting">

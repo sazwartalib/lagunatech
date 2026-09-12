@@ -15,14 +15,14 @@ test('an admin can add a staff member and assign roles', function () {
 
     Livewire::test(StaffForm::class)
         ->set('name', 'Aisyah Rahman')
-        ->set('email', 'aisyah@lagunatech.com')
+        ->set('email', 'aisyah@lagunatech.my')
         ->set('position', 'QA Engineer')
         ->set('roles', [Role::Developer->value])
         ->call('save')
         ->assertHasNoErrors()
         ->assertRedirect(route('staff.index'));
 
-    $user = User::firstWhere('email', 'aisyah@lagunatech.com');
+    $user = User::firstWhere('email', 'aisyah@lagunatech.my');
 
     expect($user)->not->toBeNull()
         ->and($user->hasRole(Role::Developer->value))->toBeTrue()
@@ -36,7 +36,7 @@ test('adding a staff member requires at least one role', function () {
 
     Livewire::test(StaffForm::class)
         ->set('name', 'No Role')
-        ->set('email', 'norole@lagunatech.com')
+        ->set('email', 'norole@lagunatech.my')
         ->set('roles', [])
         ->call('save')
         ->assertHasErrors('roles');

@@ -20,7 +20,7 @@
         @csrf
 
         <x-ui.field label="Email" name="email" required>
-            <x-ui.input type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="you@lagunatech.com" />
+            <x-ui.input type="email" name="email" :value="old('email')" required autofocus autocomplete="username" placeholder="you@lagunatech.my" />
         </x-ui.field>
 
         <x-ui.field label="Password" name="password" required>

@@ -246,7 +246,7 @@ class DemoSeeder extends Seeder
             'company.name' => 'Laguna Tech Sdn Bhd',
             'company.registration_no' => '202601000123 (1400123-X)',
             'company.address' => "Level 12, Menara Laguna\nJalan Tun Razak, 50400 Kuala Lumpur",
-            'company.email' => 'hello@lagunatech.com',
+            'company.email' => 'hello@lagunatech.my',
             'company.phone' => '03-2000 1234',
             'company.bank_details' => "Maybank — Laguna Tech Sdn Bhd\nAccount: 5123 4567 8901\nSwift: MBBEMYKL",
             'finance.default_tax_rate' => 8,
@@ -492,7 +492,7 @@ class DemoSeeder extends Seeder
     {
         $owner = User::factory()->create([
             'name' => 'Saiful Rahman',
-            'email' => 'owner@lagunatech.com',
+            'email' => 'owner@lagunatech.my',
             'position' => 'Founder & CEO',
             'department' => 'Management',
         ]);
@@ -500,7 +500,7 @@ class DemoSeeder extends Seeder
 
         $admin = User::factory()->create([
             'name' => 'Nadia Ismail',
-            'email' => 'admin@lagunatech.com',
+            'email' => 'admin@lagunatech.my',
             'position' => 'Operations Manager',
             'department' => 'Management',
         ]);
@@ -508,7 +508,7 @@ class DemoSeeder extends Seeder
 
         $finance = User::factory()->create([
             'name' => 'Farah Lim',
-            'email' => 'finance@lagunatech.com',
+            'email' => 'finance@lagunatech.my',
             'position' => 'Finance Executive',
             'department' => 'Finance',
         ]);
@@ -518,7 +518,7 @@ class DemoSeeder extends Seeder
             ->map(function (string $name): User {
                 $user = User::factory()->create([
                     'name' => $name,
-                    'email' => strtolower(explode(' ', $name)[0]).'@lagunatech.com',
+                    'email' => strtolower(explode(' ', $name)[0]).'@lagunatech.my',
                     'position' => 'Project Manager',
                     'department' => 'Delivery',
                 ]);
@@ -531,7 +531,7 @@ class DemoSeeder extends Seeder
             ->map(function (string $name): User {
                 $user = User::factory()->create([
                     'name' => $name,
-                    'email' => strtolower(str_replace(' ', '.', $name)).'@lagunatech.com',
+                    'email' => strtolower(str_replace(' ', '.', $name)).'@lagunatech.my',
                     'position' => 'Software Engineer',
                     'department' => 'Engineering',
                 ]);
@@ -544,7 +544,7 @@ class DemoSeeder extends Seeder
             ->map(function (string $name): User {
                 $user = User::factory()->create([
                     'name' => $name,
-                    'email' => strtolower(str_replace(' ', '.', $name)).'@lagunatech.com',
+                    'email' => strtolower(str_replace(' ', '.', $name)).'@lagunatech.my',
                     'position' => 'Product Designer',
                     'department' => 'Design',
                 ]);
@@ -555,7 +555,7 @@ class DemoSeeder extends Seeder
 
         $support = User::factory()->create([
             'name' => 'Hakim Osman',
-            'email' => 'support@lagunatech.com',
+            'email' => 'support@lagunatech.my',
             'position' => 'Support Engineer',
             'department' => 'Support',
         ]);
