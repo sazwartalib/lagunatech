@@ -2,6 +2,7 @@
 
 namespace App\Mail\Auth;
 
+use App\Models\CustomerUser;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Bus\Queueable;
@@ -14,7 +15,7 @@ class PasswordChangedMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public function __construct(
-        public readonly User $user,
+        public readonly User|CustomerUser $user,
         public readonly CarbonImmutable $changedAt,
     ) {}
 

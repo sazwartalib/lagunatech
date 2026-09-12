@@ -12,9 +12,12 @@
         <x-ui.field label="Password" name="password" required>
             <x-ui.input type="password" name="password" required autocomplete="current-password" />
         </x-ui.field>
-        <label class="flex items-center gap-2 text-sm text-slate-600">
-            <input type="checkbox" name="remember" class="rounded border-slate-300 text-brand-600 focus:ring-brand-600"> Remember me
-        </label>
+        <div class="flex items-center justify-between">
+            <label class="flex items-center gap-2 text-sm text-slate-600">
+                <input type="checkbox" name="remember" class="rounded border-slate-300 text-brand-600 focus:ring-brand-600"> Remember me
+            </label>
+            <a href="{{ route('portal.password.request') }}" class="text-sm font-medium text-brand-600 hover:text-brand-700">Forgot password?</a>
+        </div>
         <x-ui.button type="submit" size="lg" class="w-full">Sign in</x-ui.button>
     </form>
 

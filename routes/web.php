@@ -15,6 +15,8 @@ use App\Http\Controllers\LeadAttachmentDownloadController;
 use App\Http\Controllers\Portal\DocumentDownloadController as PortalDocumentDownloadController;
 use App\Http\Controllers\Portal\InvoicePdfController as PortalInvoicePdfController;
 use App\Http\Controllers\Portal\LoginController as PortalLoginController;
+use App\Http\Controllers\Portal\NewPasswordController as PortalNewPasswordController;
+use App\Http\Controllers\Portal\PasswordResetLinkController as PortalPasswordResetLinkController;
 use App\Livewire\Bugs\BugForm as BugFormPage;
 use App\Livewire\Bugs\BugIndex;
 use App\Livewire\Bugs\BugShow;
@@ -249,6 +251,14 @@ Route::prefix('portal')->name('portal.')->group(function (): void {
     Route::middleware('guest:customer')->group(function (): void {
         Route::get('login', [PortalLoginController::class, 'create'])->name('login');
         Route::post('login', [PortalLoginController::class, 'store'])->middleware('throttle:6,1')->name('login.store');
+
+        Route::get('forgot-password', [PortalPasswordResetLinkController::class, 'create'])->name('password.request');
+        Route::post('forgot-password', [PortalPasswordResetLinkController::class, 'store'])
+            ->middleware('throttle:6,1')
+            ->name('password.email');
+
+        Route::get('reset-password/{token}', [PortalNewPasswordController::class, 'create'])->name('password.reset');
+        Route::post('reset-password', [PortalNewPasswordController::class, 'store'])->name('password.store');
     });
 
     Route::middleware(['auth:customer', 'customer.active'])->group(function (): void {

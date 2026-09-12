@@ -2,6 +2,7 @@
 
 namespace App\Mail\Auth;
 
+use App\Models\CustomerUser;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,7 +14,7 @@ class ResetPasswordMail extends Mailable implements ShouldQueue
     use Queueable, SerializesModels;
 
     public function __construct(
-        public readonly User $user,
+        public readonly User|CustomerUser $user,
         public readonly string $url,
         public readonly int $expiresMinutes,
     ) {}
