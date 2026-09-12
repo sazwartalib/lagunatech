@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Role;
+use App\Livewire\Drawings\DrawingIndex;
 use App\Livewire\Drawings\DrawingManager;
 use App\Models\Drawing;
 use App\Models\Project;
@@ -23,6 +24,32 @@ test('a drawing can be created against a project', function () {
         ->and($drawing->title)->toBe('Homepage Wireframe')
         ->and($drawing->status->value)->toBe('draft')
         ->and($drawing->drawable_type)->toBe(Project::class);
+});
+
+test('a drawing can be created standalone, without a project', function () {
+    actingAsRole(Role::Developer);
+
+    Livewire::test(DrawingIndex::class)
+        ->set('newTitle', 'Quick Client Sketch')
+        ->call('create')
+        ->assertHasNoErrors();
+
+    $drawing = Drawing::where('title', 'Quick Client Sketch')->first();
+
+    expect($drawing)->not->toBeNull()
+        ->and($drawing->drawable_type)->toBeNull()
+        ->and($drawing->drawable_id)->toBeNull();
+});
+
+test('a standalone drawing is viewable and editable like any other', function () {
+    actingAsRole(Role::Developer);
+    $drawing = Drawing::factory()->create(['drawable_type' => null, 'drawable_id' => null]);
+
+    $this->get(route('drawings.show', $drawing))->assertOk()->assertSee($drawing->title);
+    $this->get(route('drawings.present', $drawing))->assertOk();
+
+    $this->patch(route('drawings.update', $drawing), ['canvas_data' => ['objects' => []]])
+        ->assertOk();
 });
 
 test('a support user without create-drawings permission cannot create one', function () {

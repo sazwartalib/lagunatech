@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class CreateDrawing
 {
-    public function handle(Model $drawable, string $title): Drawing
+    public function handle(?Model $drawable, string $title): Drawing
     {
         return Drawing::create([
-            'drawable_type' => $drawable::class,
-            'drawable_id' => $drawable->getKey(),
+            'drawable_type' => $drawable?->getMorphClass(),
+            'drawable_id' => $drawable?->getKey(),
             'title' => $title,
             'canvas_data' => ['version' => '6.0.0', 'objects' => []],
             'created_by' => auth()->id(),

@@ -1,5 +1,25 @@
 <div>
-    <x-ui.page-header title="Drawings" subtitle="Wireframes, diagrams and concepts across every project." />
+    <x-ui.page-header title="Drawings" subtitle="Wireframes, diagrams and concepts — standalone or linked to a project.">
+        <x-slot:actions>
+            @can('create', \App\Models\Drawing::class)
+                <x-ui.button size="sm" wire:click="$toggle('showCreate')" icon="＋">New drawing</x-ui.button>
+            @endcan
+        </x-slot:actions>
+    </x-ui.page-header>
+
+    @if ($showCreate)
+        <x-ui.card class="mb-4">
+            <form wire:submit="create" class="flex items-end gap-3">
+                <div class="flex-1">
+                    <x-ui.field label="Title" name="newTitle" required>
+                        <x-ui.input wire:model="newTitle" placeholder="e.g. Client Workshop Sketch" autofocus />
+                    </x-ui.field>
+                </div>
+                <x-ui.button type="button" variant="secondary" wire:click="$set('showCreate', false)">Cancel</x-ui.button>
+                <x-ui.button type="submit">Create</x-ui.button>
+            </form>
+        </x-ui.card>
+    @endif
 
     <div class="mb-4 flex flex-wrap items-center gap-3">
         <div class="w-full max-w-xs">
@@ -30,7 +50,7 @@
             </a>
         @empty
             <div class="col-span-full">
-                <x-ui.empty-state icon="🎨" title="No drawings yet" description="Open a project and create one from its Drawings tab." />
+                <x-ui.empty-state icon="🎨" title="No drawings yet" description="Create one above, or open a project's Drawings tab to start from there." />
             </div>
         @endforelse
     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Drawings;
 
+use App\Actions\Drawings\CreateDrawing;
 use App\Enums\DrawingStatus;
 use App\Models\Drawing;
 use Illuminate\Contracts\View\View;
@@ -24,6 +25,10 @@ class DrawingIndex extends Component
     #[Url(except: '')]
     public string $status = '';
 
+    public bool $showCreate = false;
+
+    public string $newTitle = '';
+
     public function mount(): void
     {
         $this->authorize('viewAny', Drawing::class);
@@ -34,6 +39,20 @@ class DrawingIndex extends Component
         if (in_array($property, ['search', 'status'], true)) {
             $this->resetPage();
         }
+    }
+
+    public function create(CreateDrawing $create): void
+    {
+        $this->authorize('create', Drawing::class);
+
+        $validated = $this->validate(['newTitle' => ['required', 'string', 'max:255']]);
+
+        $drawing = $create->handle(null, $validated['newTitle']);
+
+        // Full page load, not wire:navigate — the canvas editor's JS module
+        // must execute fresh; Livewire's SPA navigation won't run a newly
+        // inserted <script type="module"> tag.
+        $this->redirect(route('drawings.show', $drawing));
     }
 
     public function render(): View
