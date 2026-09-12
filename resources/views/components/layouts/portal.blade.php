@@ -15,14 +15,18 @@
 @php($me = auth('customer')->user())
 
 <div class="min-h-full">
-    <header class="border-b border-slate-200 bg-white">
+    <header class="border-b border-slate-200 bg-white" x-data="{ mobileNavOpen: false }">
         <div class="mx-auto flex h-14 max-w-5xl items-center gap-4 px-4 sm:px-6">
+            <button type="button" class="text-slate-500 sm:hidden" @click="mobileNavOpen = !mobileNavOpen" aria-label="Toggle navigation">
+                <svg class="size-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+
             <a href="{{ route('portal.dashboard') }}" wire:navigate class="flex items-center gap-2 font-semibold text-slate-900">
                 <img src="{{ asset('images/logo-icon.png') }}" alt="{{ config('app.name') }}" class="size-8 shrink-0 sm:hidden">
                 <img src="{{ asset('images/logo-full.png') }}" alt="{{ config('app.name') }}" class="hidden h-7 w-auto sm:block">
             </a>
 
-            <nav class="ml-2 flex items-center gap-1 text-sm">
+            <nav class="ml-2 hidden items-center gap-1 text-sm sm:flex">
                 @foreach ([
                     'portal.dashboard' => 'Home',
                     'portal.projects' => 'Projects',
@@ -57,6 +61,24 @@
                 </div>
             </div>
         </div>
+
+        <nav x-show="mobileNavOpen" x-cloak x-transition.origin.top @click.outside="mobileNavOpen = false"
+             class="flex flex-col gap-1 border-t border-slate-200 px-4 py-2 sm:hidden">
+            @foreach ([
+                'portal.dashboard' => 'Home',
+                'portal.projects' => 'Projects',
+                'portal.quotations' => 'Quotations',
+                'portal.invoices' => 'Invoices',
+                'portal.tickets' => 'Support',
+            ] as $route => $label)
+                <a href="{{ route($route) }}" wire:navigate @click="mobileNavOpen = false"
+                   @class([
+                       'rounded-lg px-3 py-2 text-sm font-medium transition',
+                       'bg-brand-50 text-brand-700' => request()->routeIs($route.'*'),
+                       'text-slate-600 hover:bg-slate-100' => ! request()->routeIs($route.'*'),
+                   ])>{{ $label }}</a>
+            @endforeach
+        </nav>
     </header>
 
     <main class="mx-auto max-w-5xl px-4 py-8 sm:px-6">

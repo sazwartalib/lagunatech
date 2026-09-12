@@ -38,24 +38,26 @@
                         <x-ui.badge :color="$selected->status->color()" size="md" dot>{{ $selected->status->label() }}</x-ui.badge>
                     </div>
 
-                    <table class="mt-5 min-w-full text-sm">
-                        <thead><tr class="border-b border-slate-200 text-xs uppercase text-slate-400">
-                            <th class="py-2 text-left font-semibold">Description</th>
-                            <th class="py-2 text-right font-semibold">Qty</th>
-                            <th class="py-2 text-right font-semibold">Unit</th>
-                            <th class="py-2 text-right font-semibold">Amount</th>
-                        </tr></thead>
-                        <tbody class="divide-y divide-slate-100">
-                            @foreach ($selected->items as $item)
-                                <tr wire:key="qi-{{ $item->id }}">
-                                    <td class="py-2 text-slate-700">{{ $item->description }}</td>
-                                    <td class="py-2 text-right tabular-nums text-slate-600">{{ rtrim(rtrim(number_format((float) $item->quantity, 2), '0'), '.') }}</td>
-                                    <td class="py-2 text-right tabular-nums text-slate-600">{{ Number::format((float) $item->unit_price, 2) }}</td>
-                                    <td class="py-2 text-right tabular-nums font-medium text-slate-800">{{ Number::format((float) $item->line_total, 2) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="mt-5 overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead><tr class="border-b border-slate-200 text-xs uppercase text-slate-400">
+                                <th class="py-2 text-left font-semibold">Description</th>
+                                <th class="py-2 text-right font-semibold">Qty</th>
+                                <th class="py-2 text-right font-semibold">Unit</th>
+                                <th class="py-2 text-right font-semibold">Amount</th>
+                            </tr></thead>
+                            <tbody class="divide-y divide-slate-100">
+                                @foreach ($selected->items as $item)
+                                    <tr wire:key="qi-{{ $item->id }}">
+                                        <td class="py-2 text-slate-700">{{ $item->description }}</td>
+                                        <td class="py-2 text-right tabular-nums text-slate-600">{{ rtrim(rtrim(number_format((float) $item->quantity, 2), '0'), '.') }}</td>
+                                        <td class="py-2 text-right tabular-nums text-slate-600">{{ Number::format((float) $item->unit_price, 2) }}</td>
+                                        <td class="py-2 text-right tabular-nums font-medium text-slate-800">{{ Number::format((float) $item->line_total, 2) }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div class="mt-3 flex justify-end">
                         <dl class="w-full max-w-xs space-y-1 text-sm">
